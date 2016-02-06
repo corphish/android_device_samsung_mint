@@ -23,7 +23,7 @@ $(call inherit-product-if-exists, vendor/samsung/mint/mint-vendor.mk)
 $(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 
 ## overlays
-#DEVICE_PACKAGE_OVERLAYS += device/samsung/mint/overlay
+DEVICE_PACKAGE_OVERLAYS += device/samsung/mint/overlay
 
 LOCAL_PATH := device/samsung/mint
 
@@ -79,12 +79,15 @@ frameworks/native/data/etc/android.hardware.camera.xml:system/etc/permissions/an
 # Note that the only such settings should be the ones that are too low-level to
 # be reachable from resources or other mechanisms.
 PRODUCT_PROPERTY_OVERRIDES += \
-    wifi.supplicant_scan_interval=150 
+    wifi.supplicant_scan_interval=180 
 
 #Wifi
 PRODUCT_PACKAGES += \
-dhcpcd.conf \
-wpa_supplicant
+	dhcpcd.conf \
+	wpa_supplicant \
+	hostapd \
+	wpa_supplicant.conf
+
 
 
 # Audio
@@ -115,7 +118,7 @@ PRODUCT_PROPERTY_OVERRIDES := \
 	keyguard.no_require_sim=true \
 	ro.com.android.dataroaming=false \
 	persist.msms.phone_count=2 \
-	persist.sys.sprd.modemreset=1
+	persist.sys.sprd.modemreset=0
 
 # Lights
 PRODUCT_PACKAGES += \
@@ -125,13 +128,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     sensors.sc8810
 
-# Camera
-PRODUCT_PACKAGES += \
-    camera.sc8810
 
 # Display
 PRODUCT_PACKAGES += \
-    hwcomposer.sc8810\
     gralloc.sc8810
 
 
@@ -147,7 +146,6 @@ PRODUCT_PACKAGES += \
 # Permissions
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
-    frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
     frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
@@ -189,6 +187,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
     mobiledata.interfaces=rmnet0 \
     ro.zygote.disable_gl_preload=true \
     persist.radio.multisim.config=none \
+    ro.telephony.ril_class=SamsungSPRDRIL \
+    dalvik.vm.heapgrowthlimit=46m \
+    dalvik.vm.heapsize=92m \
     ro.telephony.call_ring.multiple=0 \
     ro.telephony.call_ring=0 
 
@@ -199,7 +200,6 @@ PRODUCT_AAPT_PREF_CONFIG := ldpi
 #$(call inherit-product, device/ldpi-common/ldpi.mk)
 
 #Wifi
-$(call inherit-product, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
 # Boot animation
